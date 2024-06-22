@@ -39,6 +39,7 @@
 
 div#root {
   padding: 1rem;
+  padding-left: 3rem;
 }
 
 a {
@@ -86,6 +87,8 @@ body {
 #nav-content ul {
 	list-style: none;
 	text-align: left;
+  margin-top: -4rem;
+  margin-left: 7rem;
 }
 #nav-content ul li {
   display: inline-block;
@@ -142,8 +145,8 @@ button:focus-visible {
 
 #footer footer {
   display: flex;
-  align-items: center;
-  justify-content: center;
+  align-items: flex-start;
+  justify-content: flex-start;
 }
 
 footer h2 {

@@ -38,6 +38,8 @@ const App: React.FC = () => {
   const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
   const [photos, setPhotos] = useState<Photo[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false)
+  const [hasSubmitted, setHasSubmitted] = useState<boolean>(false)
+  const [hasNoData, setHasNoData] = useState<boolean>(false)
 
   const styles = {
     datePickerDiv: {
@@ -57,6 +59,7 @@ const App: React.FC = () => {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    setHasSubmitted(!hasSubmitted);
     if (selectedDate) {
       const formattedDate = selectedDate.toISOString().split('T')[0];
       const apiKey = 'DEMO_KEY'; // Replace with your NASA API key if available
@@ -67,6 +70,10 @@ const App: React.FC = () => {
         const response = await axios.get<MarsRoverPhotosApiResponse>(url);
         setIsLoading(false);
         setPhotos(response.data.photos.slice(1, 50));
+        if(response.data.photos.length < 1) {
+          setHasNoData(true)
+
+        }
       } catch (error) {
         setIsLoading(false);
         console.error('Error fetching data from NASA API', error);
@@ -76,7 +83,8 @@ const App: React.FC = () => {
 
   return (
     <div className="App">
-      <h1>Mars Rover Photos</h1>
+      <h1>RoverScope</h1>
+      <h4 style={{ paddingTop: '1.5rem' }}>Select a Mars rover and date to get first 50 images taken on that date.</h4>
       <form onSubmit={handleSubmit}>
       <SelectBar selectedRover={selectedRover} handleSelect={handleSelect} />
       <div style={styles.datePickerDiv}>
@@ -84,7 +92,7 @@ const App: React.FC = () => {
         <br />
         <DatePicker className="w-40 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-1.5 dark:bg-gray-700 dark:border-gray-600" selected={selectedDate} onChange={(date: Date | null) => setSelectedDate(date)} />
       </div>
-      <button className="bg-gray-50 border border-gray-300 text-gray-900 text-sm"type="submit">Submit</button>
+      <button className="bg-gray-50 hover:bg-gray-300 border border-gray-300 text-gray-900 text-sm"type="submit">Submit</button>
       </form>
       <div className="photo-area">
         {
@@ -99,7 +107,7 @@ const App: React.FC = () => {
   </div>
         }
         {photos.length > 0 ? (
-          <div>
+          <div id="photo-display">
             <h2>Photos taken by {selectedRover.charAt(0).toUpperCase() + selectedRover.slice(1)} on {selectedDate?.toDateString()}:</h2>
             <div style={{ display: 'flex', flexWrap: 'wrap' }}>
               {photos.map((photo) => (
@@ -110,7 +118,7 @@ const App: React.FC = () => {
             </div>
           </div>
         ) : (
-          <p>No photos available for this date.</p>
+          hasSubmitted && hasNoData && <p>No photos available for this date.</p>
         )}
       </div>
     </div>
