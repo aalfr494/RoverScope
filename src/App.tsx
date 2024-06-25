@@ -5,6 +5,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 //import { MarsRoverPhotosApiResponse, Photo } from './types';
 import SelectBar from './SelectBar';
 
+
 interface MarsRoverPhotosApiResponse {
   photos: Photo[];
 }
@@ -55,14 +56,13 @@ const App: React.FC = () => {
 
   }
 
-  
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setHasSubmitted(!hasSubmitted);
     if (selectedDate) {
       const formattedDate = selectedDate.toISOString().split('T')[0];
-      const apiKey = 'DEMO_KEY'; // Replace with your NASA API key if available
+      const apiKey = import.meta.env.VITE_SOME_KEY; // Replace with your NASA API key if available
       const url = `https://api.nasa.gov/mars-photos/api/v1/rovers/${selectedRover}/photos?earth_date=${formattedDate}&api_key=${apiKey}`;
       setIsLoading(true);
       try {
